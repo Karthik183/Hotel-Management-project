@@ -1,0 +1,61 @@
+
+<html>
+<head>
+<title>Sign-up | Hotel Management</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<style>
+body{
+	font-family: 'Roboto', sans-serif;
+	text-align: center;
+	font-size: 20px;
+	
+}
+table tr td:nth-child(1){
+	text-align: right;
+}
+td{
+	padding: 10px;
+}
+#sub{
+	border: 1px solid grey;
+	padding: 5px;
+	margin: 0 70px 0 0;
+}
+</style>
+</head>
+<body>
+<a href="logout.php">LOGOUT</a>
+<h1>SIGN-UP FOR HOTELS</h1>
+<form action="ADDROOM.php" method="post">
+<label>Fill all the details<br></label><hr/>
+<table align="center" border="2">
+<tbody>
+<tr>
+<td>ROOM ID:</td><td><input type="text" name="room_id" required></td>
+</tr>
+<tr>
+<td>ROOM TYPE:</td><td><input type="text" name="room_type" required></td>
+</tr>
+<tr>
+<td>ROOM DESCRIPTION:</td><td><input type="text" name="room_description" required></td>
+</tr>
+
+<tr>
+<td colspan="2"><input type="submit" value="ADD ROOM" id="sub"></td>
+</tr>
+<small>*all are mandatory</small>
+
+</tbody>
+</table>
+
+
+
+
+</tbody>
+</table>
+
+
+</form>
+<hr/>
+</body>
+</html>
