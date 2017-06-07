@@ -9,38 +9,155 @@ Table of Contents
 * Install java 8
 
 Elastic search and logstash require java. So we have to install java first. Add the oracle java PPA to apt:
- 
-sudo add-apt-repository -y ppa:webupd8team/java
+ #+BEGIN_EXAMPLE
+ sudo add-apt-repository -y ppa:webupd8team/java
+ #+END_EXAMPLE
 
  update your apt package database:-
-
+#+BEGIN_EXAMPLE
 sudo apt-get update
+#+END_EXAMPLE
 
- install the latest stable version of oracle java8:- 
 
+Install the latest stable version of oracle java8:- 
+#+BEGIN_EXAMPLE
 sudo apt-get -y install oracle-java8-installer
+#+END_EXAMPLE
+
 
 * Install Elasticsearch
 
-download the package by running the below command:-
-
+ download the package by running the below command:-
+#+BEGIN_EXAMPLE
 wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+#+END_EXAMPLE
 
- enter the password when prompted.create the elasticsearch source list :-
 
+ Enter the password when prompted.create the elasticsearch source list :-
+#+BEGIN_EXAMPLE
 echo "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list.
 
+#+END_EXAMPLE
+ 
  update your apt package database:-
+#+BEGIN_EXAMPLE
 sudo apt-get update
+#+END_EXAMPLE 
+
  Install elasticsearch with this command:-
- sudo apt-get -y install elasticsearch 
+#+BEGIN_EXAMPLE
+sudo apt-get -y install elasticsearch
+#+END_EXAMPLE
+  
+
 Elasticsearch is now installed and you can check it by running the below command:-
-
+#+BEGIN_EXAMPLE
 sudo service elasticsearch status
+#+END_EXAMPLE
 
-after elasticsearch is installed.Let us edit the config file.Open the elasticsearch.yml using your favourite editor. 
-sudo vim /etc/elasticsearch/elasticsearch.yml
-For restricting outsiders for accessing your elasticsearch instance(port:9200).Find the line that specifies network.host uncomment the line and replace its value with localhost
+
+After elasticsearch is installed.Let us edit the config file.Open the elasticsearch.yml using your favourite editor.
+ #+BEGIN_EXAMPLE
+ sudo vim /etc/elasticsearch/elasticsearch.yml
+ #+END_EXAMPLE
+
+
+For restricting outsiders for accessing your elasticsearch instance(port:9200).Find the line that specifies network.host uncomment the line and replace its value with localhost.
+#+BEGIN_EXAMPLE
  network.host: "localhost"
+#+END_EXAMPLE
+
+save and exit elastic.yml.Start elasticsearch by the following command:-
+#+BEGIN_EXAMPLE
+sudo service elasticsearch restart
+#+END_EXAMPLE
+
+Then run the following command to start Elasticsearch on boot up:-
+#+BEGIN_EXAMPLE
+sudo update-rc.d elasticsearch defaults 95 10
+#+END_EXAMPLE
+
+* Install kibana
+
+kibana can be installed with a packet manager by adding Elastic's packagesource list.
+#+BEGIN_EXAMPLE
+echo "deb http://packages.elastic.co/kibana/4.4/debian stable main" | sudo tee -a /etc/apt/sources.list.d/kibana-4.4.x.listx
+#+END_EXAMPLE
+
+Update your apt package database:-
+#+BEGIN_EXAMPLE
+sudo apt-get update
+#+END_EXAMPLE
+
+Install Kibana with this command:-
+#+BEGIN_EXAMPLE
+sudo apt-get -y install kibana
+#+END_EXAMPLE
+  
+
+After installing kibana open the configuration file.
+#+BEGIN_EXAMPLE
+sudo vi /opt/kibana/config/kibana.yml
+#+END_EXAMPLE
+
+make the following changes.
+#+BEGIN_EXAMPLE
+server.host: "localhost"
+#+END_EXAMPLE
+Now enable kibana service and start it.
+#+BEGIN_EXAMPLE
+    sudo update-rc.d kibana defaults 96 9
+#+END_EXAMPLE
+#+BEGIN_EXAMPLE
+sudo service kibana start
+#+END_EXAMPLE
 
 
+
+* Install nginx
+Because we configured Kibana to listen on localhost, we must set up a reverse
+ proxy to allow external access to it.
+ We will use Nginx for this purpose.
+
+Use apt to install Nginx and Apache2-utils:
+#+BEGIN_EXAMPLE
+sudo apt-get install nginx apache2-utils
+#+END_EXAMPLE
+Use htpasswd to create an admin user, called "karthikminupala" 
+#+BEGIN_EXAMPLE
+sudo htpasswd -c /etc/nginx/htpasswd.users karthikminupala
+#+END_EXAMPLE
+Enter a password at the prompt.Dont forget this password as it is used for
+logging in to access kibana web interface.
+
+Now open the Nginx default server block in your favorite editor. We will use
+vim:
+#+BEGIN_EXAMPLE
+sudo vi /etc/nginx/sites-available/default
+#+END_EXAMPLE
+Delete the files contents and paste the following code block into the file.
+Dont forget to update server_name:-
+#+BEGIN_EXAMPLE
+    server {
+        listen 80;
+
+        server_name example.com;
+
+        auth_basic "Restricted Access";
+        auth_basic_user_file /etc/nginx/htpasswd.users;
+
+        location / {
+            proxy_pass http://localhost:5601;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;        
+        }
+    }
+
+#+END_EXAMPLE
+Now restart Nginx to put our changes into effect:-
+#+BEGIN_EXAMPLE
+sudo service ngins restart
+#+END_EXAMPLE
