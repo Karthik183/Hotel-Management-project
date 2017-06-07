@@ -1,31 +1,46 @@
 Table of Contents
 
-  **. Installation of elk stack
+  #+TITLE: Installation of elk stack
 
 *  Install java 8
 *  Install Elasticsearch
 *  Insatll kibama
 *  Install logstash
 
-1 Install java 8
+* Install java 8
 
-Elastic search and logstash require java. So we have to install java first. Add the oracle java PPA to apt: 
+Elastic search and logstash require java. So we have to install java first. Add the oracle java PPA to apt:
+ 
 sudo add-apt-repository -y ppa:webupd8team/java
 
-update your apt package database
+ update your apt package database:-
 
 sudo apt-get update
 
- install the latest stable version of oracle java8 
+ install the latest stable version of oracle java8:- 
+
 sudo apt-get -y install oracle-java8-installer
 
 * Install Elasticsearch
 
-download the package by running the below command 
+download the package by running the below command:-
+
 wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
 
- enter the password when prompted.create the elasticsearch source list echo "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list update your apt package database sudo apt-get update Install Kibana with this command: sudo apt-get -y install elasticsearch Elasticsearch is now installed and you can check it by running the below command sudo service elasticsearch status
+ enter the password when prompted.create the elasticsearch source list :-
+echo "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list.
 
-after elasticsearch is installed let us edit the config file.Open the elasticsearch.yml using your favourite editor. sudo vim /etc/elasticsearch/elasticsearch.yml for restricting outsiders for accessing your elasticsearch instance(port:9200).Find the line that specifies network.host uncomment the line and replace its value with localhost network.host: "localhost"
+ update your apt package database:-
+sudo apt-get update
+ Install elasticsearch with this command:-
+ sudo apt-get -y install elasticsearch 
+Elasticsearch is now installed and you can check it by running the below command:-
+
+sudo service elasticsearch status
+
+after elasticsearch is installed.Let us edit the config file.Open the elasticsearch.yml using your favourite editor. 
+sudo vim /etc/elasticsearch/elasticsearch.yml
+For restricting outsiders for accessing your elasticsearch instance(port:9200).Find the line that specifies network.host uncomment the line and replace its value with localhost
+ network.host: "localhost"
 
 
