@@ -1,0 +1,61 @@
+#+TITLE: Copying files from the host machine to the container using shell script.
+
+* INtroduction:-
+This document explains how to copy files form the host machine to the container
+without enetering the password.
+
+* Implementation
+Copying files can be done using ip address of the container and also root
+password of the container.
+#+BEGIN_EXAMPLE
+scp /home/karthik/Desktop/sample.txt  vlead@10.4.15.211:~/test
+#+END_EXAMPLE
+ 
+THe above command copies the file sample.txt in Desktop directory to test
+directory of the container with ipaddress(10.4.15.211).But It asks for the password
+of vlead@10.4.15.211 every time you run the command.For overcoming the above
+problem we connect the machines using ssh keys.
+
+* Generation of ssh keys
+ We can have the computer generate two key files – one public that belongs on the remote server,
+and one private which is on your computer and needs to be secure – and these
+will be used instead of a password.
+#+BEGIN_EXAMPLE
+ssh -keygen -t rsa 
+#+END_EXAMPLE
+This will generate two keys(public and private key) and place them in 
+#+BEGIN_EXAMPLE
+~/.ssh
+#+END_EXAMPLE
+with the names id_rsa for your private key and id_rsa.pub for your public key.
+Just hit enter to leave it as blank when asked for.
+
+We will be generating ssh keys in both the machines and sharing them connect
+the machines.
+
+Connection can be established by the following command.
+#+BEGIN_EXAMPLE
+scp ~/.ssh/id_rsa.pub vlead@10.4.15.211:~/.ssh/authorized_keys2
+#+END_EXAMPLE
+After running the command you will be asked to enter the password of
+vlead@10.4.15.211.After entering the password th connection will be estblished
+between the hostmachine and container.
+
+* copying files using shell script
+If you want to run more number of commands at a time we use shell script which
+automatically runs the commands in it.For copying we are using the following
+shell script.
+#+BEGIN_EXAMPLE
+rsync -avz root@10.4.15.211:~/virat/sample.txt 
+#+END_EXAMPLE
+The above command copies sample.txt which is in virat directory from
+hostmachine to root@10.4.15.211.
+
+for running shell script file first copy the above command in sample.sh.
+Run sample.sh using
+#+BEGIN_EXAMPLE
+chmod a+x sample.sh
+#+END_EXAMPLE
+#+BEGIN_EXAMPLE
+./sample.sh
+#+END_EXAMPLE
