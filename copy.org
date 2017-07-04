@@ -1,6 +1,6 @@
 #+TITLE: Copying files from the host machine to the container using shell script.
 
-* INtroduction:-
+* Introduction:-
 This document explains how to copy files form the host machine to the container
 without enetering the password.
 
